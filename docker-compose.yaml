@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  ecommerce-api:
+    image: 
+      ecommerce:0.0.1
+    depends_on: 
+       - ecommerce-db
+    command: sh -c "/wait && /sayhello"
+    environment: 
+      - WAIT_HOSTS=mysql:3306
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+      - DATASOURCE_HOST:ecommerce-db
+      - spring.profiles.active:qa
+    ports: 
+       - '8081:8081'
+    restart: always
+    networks: 
+       - ecommerce-network
+
+  ecommerce-db: 
+    image: mysql:latest 
+    environment: 
+      - MYSQL_ROOT_PASSWORD=root
+      - MSQL_DATABASE=ECOMMERCE
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mysql-database-data-volume:/var/lib/mysql
+    networks: 
+       - ecommerce-network
+   
+networks: 
+  ecommerce-network:  
+
+volumes:
+  mysql-database-data-volume:
+  
