@@ -1,9 +1,9 @@
 package com.ecommerce.security;
 
 import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -39,13 +39,14 @@ public class AppSecurity extends WebSecurityConfigurerAdapter {
 		http
 		    .csrf().disable()
 		    .headers().frameOptions().disable().and()
-		    .addFilter(new AuthenticationFilter(authenticationManager(),config))
 		    .addFilterAfter(new AuthorizationFIlter(config.getSecret()), AuthenticationFilter.class)
 		    .authorizeRequests()
 		    .antMatchers("/","/login","/h2-console/**","/*.css","/*.js","/assets/*.svg","/logout","/**/signup").permitAll()
-		    .antMatchers("/api/*").authenticated().and().oauth2Login().successHandler(successHandler);;
+		    .antMatchers("/api/*").authenticated()
+		    .and().oauth2Login().successHandler(successHandler);;
 	}
 	
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(getAuthenticationProvider());
@@ -69,4 +70,10 @@ public class AppSecurity extends WebSecurityConfigurerAdapter {
 	    source.registerCorsConfiguration("/**", configuration);
 	    return source;
 	  }
+	 
+	 
+	 @Bean
+	 public AuthenticationManager getAuthenticationManager() throws Exception {
+		 return authenticationManager();
+	 }
 }
