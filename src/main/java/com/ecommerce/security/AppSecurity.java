@@ -1,6 +1,9 @@
 package com.ecommerce.security;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,6 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -23,6 +30,9 @@ public class AppSecurity extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private SecurityConfig config;
+	
+	@Autowired
+	private AuthenticationSuccessHandler successHandler;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -32,8 +42,8 @@ public class AppSecurity extends WebSecurityConfigurerAdapter {
 		    .addFilter(new AuthenticationFilter(authenticationManager(),config))
 		    .addFilterAfter(new AuthorizationFIlter(config.getSecret()), AuthenticationFilter.class)
 		    .authorizeRequests()
-		    .antMatchers("/login","/h2-console/**","/logout","/**/signup").permitAll()
-		    .anyRequest().authenticated();
+		    .antMatchers("/","/login","/h2-console/**","/*.css","/*.js","/assets/*.svg","/logout","/**/signup").permitAll()
+		    .antMatchers("/api/*").authenticated().and().oauth2Login().successHandler(successHandler);;
 	}
 	
 	@Override
@@ -47,4 +57,16 @@ public class AppSecurity extends WebSecurityConfigurerAdapter {
 		provider.setUserDetailsService(userDetailsServiceImpl);
 		return provider;
 	}
+	
+	 @Bean
+	  CorsConfigurationSource corsConfigurationSource() {
+	    CorsConfiguration configuration = new CorsConfiguration();
+	    configuration.setAllowedOrigins(Arrays.asList("*"));
+	    configuration.setAllowedHeaders(Arrays.asList("*"));
+
+	    configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", configuration);
+	    return source;
+	  }
 }
