@@ -31,8 +31,6 @@ public class AuthorizationFIlter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		String authHeader = request.getHeader("Authorization");
 		if(authHeader == null || authHeader.isEmpty()) {
-		/*	response.setStatus(401);
-			response.getWriter().write("Authorizaion Header is missing");*/
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -46,7 +44,6 @@ public class AuthorizationFIlter extends OncePerRequestFilter {
 		for(String authority :  (List<String>) claimsMap.get("ROLE")) {
 			authorities.add(new SimpleGrantedAuthority(authority));
 		}
-		
 		Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
 		SecurityContextHolder.getContext().setAuthentication(authentication );
 		filterChain.doFilter(request, response);

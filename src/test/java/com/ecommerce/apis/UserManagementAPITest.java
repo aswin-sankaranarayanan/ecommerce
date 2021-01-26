@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import java.io.UnsupportedEncodingException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class UserManagementAPITest {
 
 	@Autowired
@@ -60,6 +63,21 @@ class UserManagementAPITest {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	@DisplayName("Signup for Existing User")
+	void testExistingUser() throws Exception{
+		UserRequestDTO userDTO = new UserRequestDTO();
+		userDTO.setFirstName("Test");
+		userDTO.setLastName("S");
+		userDTO.setEmailId("Tests@gmail.com");
+		userDTO.setPassword("Test@123");
+		
+		MvcResult mvcResult = sendRequest(userDTO);
+		assertThat(mvcResult.getResponse().getStatus()).isEqualTo(400);
+		assertThat(AppConstants.USER_ALREADY_EXISTS.equals(mvcResult.getResponse().getContentAsString()));
+				
 	}
 
 	@Test

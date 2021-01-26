@@ -17,7 +17,6 @@ public class UserDetailsImpl implements UserDetails {
 	
 	public UserDetailsImpl(User user) {
 		super();
-		System.out.println("User::"+user);
 		this.user = user;
 	}
 

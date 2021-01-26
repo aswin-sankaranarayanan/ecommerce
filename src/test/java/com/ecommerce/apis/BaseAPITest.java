@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@PropertySource("classpath:application-dev.properties")
+@PropertySource("classpath:application-test.properties")
 public class BaseAPITest {
 	
 	@Value("${token.secret}")

@@ -1,6 +1,7 @@
 package com.ecommerce.security;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -62,14 +63,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		
 		String token = Jwts.builder()
 				.setSubject(user.getId().toString())
-				.claim("ROLE", "USER")
+				.claim("ROLE", Arrays.asList("USER"))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + expiration))
 				.signWith(SignatureAlgorithm.HS512, secret.getBytes())
 				.compact();
-				response.addHeader("auth", token);
 				
-	  response.sendRedirect(redirectURL);
+	  response.sendRedirect(redirectURL+"?token="+token);
 		
 	}
 

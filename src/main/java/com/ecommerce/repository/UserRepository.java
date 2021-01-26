@@ -5,6 +5,7 @@ import com.ecommerce.entity.User;
 
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
-	User findByEmailId(String username);
+	User findByEmailId(String emailId);
+	boolean existsByEmailId(String emailId);
 
 }
