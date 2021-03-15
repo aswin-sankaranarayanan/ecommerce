@@ -8,14 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.ecommerce.dtos.OrderDTO;
+import com.ecommerce.dtos.OrderResponseDTO;
+import com.ecommerce.dtos.RazorPayResponse;
+import com.ecommerce.dtos.UserInfoDTO;
+import com.ecommerce.entity.OrderTransactionDetails;
+import com.ecommerce.repository.OrderProjection;
 import com.ecommerce.services.OrderService;
+import com.razorpay.RazorpayException;
 
 @RestController
 @RequestMapping("/api/order")
@@ -25,15 +33,24 @@ public class OrderAPI {
 	private OrderService orderService;
 
 	@PostMapping
-	public ResponseEntity<OrderDTO> placeOrder() {
-		OrderDTO orderDTO = orderService.placeOrder();
+	public ResponseEntity<RazorPayResponse> placeOrder(@RequestBody UserInfoDTO userInfo) throws RazorpayException {
+		RazorPayResponse order= orderService.placeRazorPayOrder(userInfo);
+		return ResponseEntity.ok(order);
+	}
+	
+	/*
+	 Paytm Work Flow
+	@PostMapping
+	public ResponseEntity<OrderDTO> placeOrder(@RequestBody UserInfoDTO userInfo) {
+		OrderDTO orderDTO = orderService.placeOrder(userInfo);
 		return ResponseEntity.ok(orderDTO);
 	}
+	*/
 
 	@GetMapping
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public ResponseEntity<List<OrderDTO>> getPlacedOrdersByUser() {
-		List<OrderDTO> orders = orderService.getPlacedOrdersByUser();
+	public ResponseEntity<List<OrderProjection>> getPlacedOrdersByUser() {
+		List<OrderProjection> orders = orderService.getPlacedOrdersByUser();
 		return ResponseEntity.ok(orders);
 	}
 
@@ -45,11 +62,24 @@ public class OrderAPI {
 
 	@GetMapping("/management")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<List<OrderDTO>> getAllPlacedOrders(
-			@NotBlank(message = "Status is required") @RequestParam("status") String status) {
-		System.out.println("Status:" + status);
-		List<OrderDTO> orders = orderService.getAllOrders(status);
+	public ResponseEntity<OrderResponseDTO> getOrders(
+			@NotBlank(message = "Status is required") @RequestParam(name="status",defaultValue = "ALL") String status,
+			@RequestParam(name = "size",defaultValue = "3") Integer size,
+			@RequestParam(name = "page",defaultValue = "0") Integer pageNumber) {
+		OrderResponseDTO orders = orderService.getAllOrders(status,pageNumber,size);
 		return ResponseEntity.ok(orders);
+	}
+	
+	@GetMapping("/management/{id}")
+	public ResponseEntity<List<OrderProjection>> getOrderDetails(@PathVariable("id") Long id) {
+		List<OrderProjection> orderDetails = orderService.getOrderDetails(id);
+		return ResponseEntity.ok(orderDetails);
+	}
+	
+	@GetMapping("/management/tx/{id}")
+	public ResponseEntity<OrderTransactionDetails> getTransactionDetails(@PathVariable("id") Long id) {
+		OrderTransactionDetails txDetails = orderService.getTransactionDetails(id);
+		return ResponseEntity.ok(txDetails);
 	}
 	
 	@PutMapping("/management")

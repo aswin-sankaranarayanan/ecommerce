@@ -43,8 +43,8 @@ public class CartAPI {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteCartItem(@NotNull @PathVariable("id") Long cartId){
-		cartService.deleteCartItem(cartId);
+	public ResponseEntity<Void> deleteCartItem(@NotNull @PathVariable("id") Long cartItemId){
+		cartService.deleteCartItem(cartItemId);
 		return ResponseEntity.ok().build();
 	}
 }

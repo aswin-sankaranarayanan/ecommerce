@@ -10,7 +10,6 @@ import com.ecommerce.dtos.CartItemDTO;
 import com.ecommerce.entity.Cart;
 import com.ecommerce.entity.CartItem;
 import com.ecommerce.entity.User;
-import com.ecommerce.exceptions.ApplicationException;
 import com.ecommerce.repository.CartItemRepository;
 import com.ecommerce.repository.CartRepository;
 import com.ecommerce.utils.SessionUtils;
@@ -25,10 +24,22 @@ public class CartService extends BaseService<Cart, CartDTO> {
 	private CartItemRepository cartItemReposiotry;
 	
 	public CartDTO addItemToCart(CartDTO cartDTO) {
-		Cart cart = convertToEntity(cartDTO, Cart.class);
 		User user = SessionUtils.getLoggedInUser();
-		cart.setUser(user);
-		Cart savedCartEntity = cartReposiotry.save(cart);
+		Cart userCart = getCartForUser();
+		Cart savedCartEntity = null;
+		if(userCart!=null) {
+			for(CartItemDTO cartItemDTO: cartDTO.getCartItems()) {
+				CartItem cartItem = convertToCartItemEntity(cartItemDTO);
+				cartItem.setCart(userCart);
+				userCart.getCartItems().add(cartItem);
+			}
+			savedCartEntity = cartReposiotry.save(userCart);
+		}else {
+			Cart cart = convertToEntity(cartDTO, Cart.class);
+			cart.setUser(user);
+			savedCartEntity = cartReposiotry.save(cart);
+		}
+		
 		return convertToDTO(savedCartEntity, CartDTO.class);
 	}
 
@@ -59,11 +70,25 @@ public class CartService extends BaseService<Cart, CartDTO> {
 		cartReposiotry.delete(cartFromDB);
 	}
 	
+	public void deleteCart(User user) {
+		Cart cartFromDB = cartReposiotry.findByUser(user).orElse(null);
+		cartReposiotry.delete(cartFromDB);
+	}
+	
 	
 	private Cart getCartForUser() {
 		User user = SessionUtils.getLoggedInUser();
-		System.out.println("Get Cart For User"+user.getId());
-		Cart cart = cartReposiotry.findByUser(user).orElseThrow(()-> new ApplicationException("Empty Cart!"));
+		Cart cart = cartReposiotry.findByUser(user).orElse(null);
 		return cart;
+	}
+	
+	public Integer getCartItemsCount() {
+		Cart cart = getCartForUser();
+		return cart!=null? cart.getCartItems().size():0;
+	}
+	
+	
+	 CartItem convertToCartItemEntity(CartItemDTO dto) {
+		return (CartItem) mapper.map(dto, CartItem.class);
 	}
 }

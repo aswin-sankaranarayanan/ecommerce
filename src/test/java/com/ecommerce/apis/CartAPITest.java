@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -15,7 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import com.ecommerce.dtos.CartDTO;
 import com.ecommerce.dtos.CartItemDTO;
+import com.ecommerce.dtos.CategoryDTO;
 import com.ecommerce.dtos.InventoryDTO;
+import com.ecommerce.dtos.SubCategoryDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -36,7 +39,13 @@ class CartAPITest extends BaseAPITest {
 		for (int i = 1; i <= 3; i++) {
 			InventoryDTO inventoryDTO = new InventoryDTO();
 			inventoryDTO.setId(Long.valueOf(i));
-
+			inventoryDTO.setItem("Dummy");
+			inventoryDTO.setDescription("Dummy");
+			inventoryDTO.setPrice(25.00);
+			inventoryDTO.setCategory(new CategoryDTO(1L));
+			inventoryDTO.setSubCategory(new SubCategoryDTO(1L));
+			inventoryDTO.setInventoryImages(Collections.EMPTY_LIST);
+			
 			CartItemDTO cartItem = new CartItemDTO();
 			cartItem.setInventory(inventoryDTO);
 			cartItem.setQuantity(1);
@@ -77,7 +86,13 @@ class CartAPITest extends BaseAPITest {
 	public void updateQuantity() {
 		InventoryDTO inventoryDTO = new InventoryDTO();
 		inventoryDTO.setId(1L);
-
+		inventoryDTO.setItem("Dummy");
+		inventoryDTO.setDescription("Dummy");
+		inventoryDTO.setPrice(25.00);
+		inventoryDTO.setCategory(new CategoryDTO(1L));
+		inventoryDTO.setSubCategory(new SubCategoryDTO(1L));
+		inventoryDTO.setInventoryImages(Collections.EMPTY_LIST);
+		
 		CartItemDTO cartItem = new CartItemDTO();
 		cartItem.setId(1003L);
 		cartItem.setInventory(inventoryDTO);

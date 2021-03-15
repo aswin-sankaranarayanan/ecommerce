@@ -8,6 +8,7 @@ public class AppConstants {
 	public static final String USER_ALREADY_EXISTS = "User already exists";
 	
 	public static enum ORDER_STATUS {
+		PENDING,
 		PLACED,
 		CANCELLED,
 		DISPATCHED

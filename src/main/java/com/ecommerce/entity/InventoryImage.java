@@ -2,7 +2,6 @@ package com.ecommerce.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -16,8 +15,8 @@ public class InventoryImage extends BaseEntity {
 	@JoinColumn(name = "INVENTORY_FK")
 	private Inventory inventory;
 	
-	@Lob
-	private byte[] image;
+	
+	private String imagePath;
 
 	public String getFileName() {
 		return fileName;
@@ -35,12 +34,12 @@ public class InventoryImage extends BaseEntity {
 		this.inventory = inventory;
 	}
 
-	public byte[] getImage() {
-		return image;
+	public String getImagePath() {
+		return imagePath;
 	}
 
-	public void setImage(byte[] image) {
-		this.image = image;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
-	
+
 }

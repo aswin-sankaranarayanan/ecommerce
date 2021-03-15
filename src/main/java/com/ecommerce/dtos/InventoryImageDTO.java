@@ -16,6 +16,8 @@ public class InventoryImageDTO extends BaseDTO {
 	@NotNull(message= "Invalid Image")
 	private  byte[] image;
 	
+	private String imagePath;
+	
 	
 	public String getFileName() {
 		return fileName;
@@ -30,6 +32,13 @@ public class InventoryImageDTO extends BaseDTO {
 	}
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+	
+	public String getImagePath() {
+		return imagePath;
+	}
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 	
 	@Override

@@ -74,16 +74,18 @@ public class UserService extends BaseService<User, UserResponseDTO> {
 			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 			Long userId = userDetails.getUser().getId();
 			LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+			Long expirationDate = System.currentTimeMillis() + expiration;
 			String token = Jwts.builder()
 							.setSubject(userId.toString())
 							.claim("ROLE", authorities)
 							.setIssuedAt(new Date())
-							.setExpiration(new Date(System.currentTimeMillis() + expiration))
+							.setExpiration(new Date(expirationDate))
 							.signWith(SignatureAlgorithm.HS512, secret.getBytes())
 							.compact();
 			UserResponseDTO userResponseDTO = convertToDTO(userDetails.getUser(), UserResponseDTO.class);
 			loginResponseDTO.setUser(userResponseDTO);
 			loginResponseDTO.setToken(token);
+			loginResponseDTO.setExpiration(expirationDate);
 			return loginResponseDTO;
 		}catch(Exception e) {
 			throw new ApplicationException("Invalid Username or Password");
@@ -96,6 +98,7 @@ public class UserService extends BaseService<User, UserResponseDTO> {
 								.orElseThrow(()-> new ApplicationException("User not found!"));
 		LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
 		loginResponseDTO.setUser(convertToDTO(loggedInUser, UserResponseDTO.class));
+		loginResponseDTO.setExpiration(System.currentTimeMillis() + expiration);
 		return loginResponseDTO;
 	}
 }

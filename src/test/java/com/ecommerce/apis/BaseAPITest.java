@@ -42,6 +42,11 @@ public class BaseAPITest {
 	public void generateToken() {
 		token = TokenGenerator.getToken(1L, "USER", secret, expiration);
 	}
+	
+	public String generateTokenForUser() {
+		generateToken();
+		return token;
+	}
 
 	protected MockHttpServletResponse performPost(String ENDPOINT,Object content) throws Exception {
 		System.out.println("Sending Request to "+ENDPOINT);

@@ -1,5 +1,6 @@
 package com.ecommerce.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -9,11 +10,22 @@ import javax.persistence.Table;
 @Table(name="USER_INFO")
 public class UserInfo extends BaseEntity {
 
+	@Column(name="ADDRESS_LINE_1")
 	private String addressLine1;
+	
+	@Column(name="ADDRESS_LINE_2")
 	private String addressLine2;
+	
+	@Column(name="CITY")
 	private String city;
+	
+	@Column(name="STATE")
 	private String state;
+	
+	@Column(name="ZIPCODE")
 	private Integer zipcode;
+	
+	@Column(name="DEFAULT_ADDRESS")
 	private boolean defaultAddress;
 	
 	@ManyToOne

@@ -3,8 +3,10 @@ package com.ecommerce.dtos;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ecommerce.json.serializer.OrderSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@JsonSerialize(using = OrderSerializer.class)
 public class OrderDTO extends BaseDTO {
 
 	private List<OrderDetailsDTO> orderDetails;
@@ -12,8 +14,7 @@ public class OrderDTO extends BaseDTO {
 	private Date estimatedDeliveryDate;
 	private double totalPrice;
 	private String status;
-	
-	@JsonIgnore
+	private UserInfoDTO userInfo;
 	private UserResponseDTO user;
 
 	public List<OrderDetailsDTO> getOrderDetails() {
@@ -62,6 +63,14 @@ public class OrderDTO extends BaseDTO {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public UserInfoDTO getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfoDTO userInfo) {
+		this.userInfo = userInfo;
 	}
 
 	@Override

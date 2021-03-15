@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 
@@ -34,6 +35,7 @@ public class AuthorizationFIlter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
+		try {
 		String token = authHeader.replace("Bearer", "");
 		Jws<Claims> claims = Jwts.parser()
 				.setSigningKey(secret.getBytes())
@@ -47,6 +49,11 @@ public class AuthorizationFIlter extends OncePerRequestFilter {
 		Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
 		SecurityContextHolder.getContext().setAuthentication(authentication );
 		filterChain.doFilter(request, response);
+		}catch(ExpiredJwtException e) {
+			e.printStackTrace();
+			response.setStatus(500);
+			response.getWriter().print("Token Expired Login Again");
+		}
 	}
 
 }

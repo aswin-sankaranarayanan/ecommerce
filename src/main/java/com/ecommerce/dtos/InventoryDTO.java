@@ -4,7 +4,10 @@ import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import com.ecommerce.json.serializer.InventorySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@JsonSerialize(using= InventorySerializer.class)
 public class InventoryDTO extends BaseDTO {
 
 	@NotBlank(message = "Item Name is required")
@@ -13,8 +16,12 @@ public class InventoryDTO extends BaseDTO {
 	@NotBlank(message = "Item Description is required")
 	private String description;
 	
-	@NotBlank(message = "Item Category is required")
-	private String category;
+	
+	private CategoryDTO category;
+	
+	private SubCategoryDTO subCategory;
+	
+	private String language;
 	
 	private boolean available;
 	
@@ -41,12 +48,6 @@ public class InventoryDTO extends BaseDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
 	public boolean isAvailable() {
 		return available;
 	}
@@ -71,13 +72,37 @@ public class InventoryDTO extends BaseDTO {
 	public void addInventoryImage(InventoryImageDTO inventoryImage) {
 		this.inventoryImages.add(inventoryImage);
 	}
+	
+	public CategoryDTO getCategory() {
+		return category;
+	}
+
+	public void setCategory(CategoryDTO category) {
+		this.category = category;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	
+
+	public SubCategoryDTO getSubCategory() {
+		return subCategory;
+	}
+
+	public void setSubCategory(SubCategoryDTO subCategory) {
+		this.subCategory = subCategory;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + (available ? 1231 : 1237);
-		result = prime * result + ((category == null) ? 0 : category.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((item == null) ? 0 : item.hashCode());
 		result = prime * result + ((price == null) ? 0 : price.hashCode());

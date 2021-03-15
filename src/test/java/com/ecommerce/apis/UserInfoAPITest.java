@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -81,12 +83,13 @@ class UserInfoAPITest extends BaseAPITest {
 	public void testUpdateUserInfo() {
 		try {
 			UserInfoDTO updatedUserInfoDTO = new UserInfoDTO();
-			updatedUserInfoDTO.setId(1L);
+			updatedUserInfoDTO.setId(99L);
 			updatedUserInfoDTO.setCity("Chennai");
 			updatedUserInfoDTO.setState("Tamil Nadu");
 			updatedUserInfoDTO.setAddressLine1("4/708 Third Street");
 			updatedUserInfoDTO.setAddressLine2("Captain Sasi Kumar Nagar, Old Perungalathur");
 			updatedUserInfoDTO.setZipcode(600045);
+			updatedUserInfoDTO.setDefaultAddress(false);
 			
 			MockHttpServletResponse response = performPut(ENDPOINT, updatedUserInfoDTO);
 			assertThat(response.getStatus()).isEqualTo(200);
@@ -103,9 +106,8 @@ class UserInfoAPITest extends BaseAPITest {
 	@Order(4)
 	public void testDeleteUserInfo() {
 		try {
-			MockHttpServletResponse response = performDelete(ENDPOINT+"/1");
+			MockHttpServletResponse response = performDelete(ENDPOINT+"/99");
 			assertThat(response.getStatus()).isEqualTo(200);
-			assertThat(response.getContentAsString()).isEqualTo(AppConstants.DELETE_USER_INFO_SUCCESS);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Get User Information");

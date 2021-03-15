@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,9 +18,17 @@ public class Inventory extends BaseEntity {
 	private String item;
 	@Lob
 	private String description;
-	private String category;
 	private boolean available;
 	private Double price;
+	private String language;
+	
+	@OneToOne
+	@JoinColumn(name = "CATEGORY_FK")
+	private Category category;
+	
+	@OneToOne
+	@JoinColumn(name = "SUB_CATEGORY_FK")
+	private SubCategory subCategory;
 	
 	@OneToMany(mappedBy = "inventory",cascade = CascadeType.ALL)
 	private List<InventoryImage> inventoryImages;
@@ -44,13 +54,6 @@ public class Inventory extends BaseEntity {
 		this.description = description;
 	}
 
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
 
 	public boolean isAvailable() {
 		return available;
@@ -81,6 +84,29 @@ public class Inventory extends BaseEntity {
 		this.inventoryImages.add(inventoryImage);
 		inventoryImage.setInventory(this);
 	}
-	
-	
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public SubCategory getSubCategory() {
+		return subCategory;
+	}
+
+	public void setSubCategory(SubCategory subCategory) {
+		this.subCategory = subCategory;
+	}
+
 }

@@ -63,7 +63,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		
 		String token = Jwts.builder()
 				.setSubject(user.getId().toString())
-				.claim("ROLE", Arrays.asList("USER"))
+				.claim("ROLE", Arrays.asList("ROLE_USER"))
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + expiration))
 				.signWith(SignatureAlgorithm.HS512, secret.getBytes())

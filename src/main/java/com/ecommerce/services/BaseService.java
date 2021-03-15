@@ -16,7 +16,7 @@ public class BaseService<E,D> {
 	}
 	
 	protected D convertToDTO(E entity,Class<D> dto) {
-		return (D) mapper.map(entity,dto);
+		return entity == null ?  null: (D) mapper.map(entity,dto);
 	}
 	
 	protected void copyDTOPropertiesToEntity(D src,E dest) {

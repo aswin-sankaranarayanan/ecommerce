@@ -75,7 +75,7 @@ public class UserInfoDTO extends BaseDTO {
 	
 	@Override
 	public String toString() {
-		return "UserInfoDTO [addressLine1=" + addressLine1 + ", addressLine2=" + addressLine2 + ", city=" + city
+		return "UserInfoDTO [id="+id+", addressLine1=" + addressLine1 + ", addressLine2=" + addressLine2 + ", city=" + city
 				+ ", state=" + state + ", zipcode=" + zipcode + ", defaultAddress=" + defaultAddress + "]";
 	}
 	@Override

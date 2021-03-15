@@ -2,12 +2,12 @@ package com.ecommerce.entity;
 
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -17,6 +17,14 @@ public class Order extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "USER_FK")
 	private User user;
+	
+	@OneToOne
+	@JoinColumn(name="USER_INFO_FK")
+	private UserInfo userInfo;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="ORDER_TX_FK")
+	private OrderTransactionDetails orderTransactionDetails;
 
 	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
 	private List<OrderDetails> orderDetails;
@@ -74,5 +82,23 @@ public class Order extends BaseEntity {
 	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public OrderTransactionDetails getOrderTransactionDetails() {
+		return orderTransactionDetails;
+	}
+
+	public void setOrderTransactionDetails(OrderTransactionDetails orderTransactionDetails) {
+		this.orderTransactionDetails = orderTransactionDetails;
+	}
+	
+	
 	
 }
