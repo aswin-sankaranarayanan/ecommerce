@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -34,19 +35,24 @@ public class AppSecurity extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AuthenticationSuccessHandler successHandler;
+	
+	@Autowired
+	private AuthEntryPoint authEntryPoint;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 		    .csrf().disable()
 		    .headers().frameOptions().disable().and()
-		    .addFilterAfter(new AuthorizationFIlter(config.getSecret()), UsernamePasswordAuthenticationFilter.class)
 		    .authorizeRequests()
 		    .antMatchers("/**/login","/h2-console/**","/*.css","/*.js","/assets/*.svg","/logout","/**/signup","/**/callback").permitAll()
 		    .antMatchers("/api/*").authenticated()
+		    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		    .and().oauth2Login().successHandler(successHandler);
 		
+		http.addFilterAfter(new AuthorizationFilter(config.getSecret()), UsernamePasswordAuthenticationFilter.class);
 		http.cors();
+		http.exceptionHandling().authenticationEntryPoint(authEntryPoint);
 	}
 	
 
